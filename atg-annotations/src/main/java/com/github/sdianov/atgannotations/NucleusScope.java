@@ -1,4 +1,4 @@
-package atgannotations;
+package com.github.sdianov.atgannotations;
 
 public enum NucleusScope {
     UNSPECIFIED,
@@ -7,5 +7,4 @@ public enum NucleusScope {
     REQUEST,
     PROTOTYPE,
     @Deprecated WINDOW
-
 }

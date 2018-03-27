@@ -3,8 +3,8 @@ package org.example;
 import atg.servlet.DynamoHttpServletRequest;
 import atg.servlet.DynamoHttpServletResponse;
 import atg.servlet.DynamoServlet;
-import atgannotations.NucleusComponent;
-import atgannotations.NucleusInject;
+import com.github.sdianov.atgannotations.NucleusComponent;
+import com.github.sdianov.atgannotations.NucleusInject;
 
 import javax.servlet.ServletException;
 import java.io.IOException;

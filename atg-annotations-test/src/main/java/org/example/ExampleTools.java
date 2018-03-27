@@ -1,8 +1,8 @@
 package org.example;
 
 import atg.nucleus.GenericService;
-import atgannotations.NucleusComponent;
+import com.github.sdianov.atgannotations.NucleusComponent;
 
 @NucleusComponent()
-public class ExampleTools extends GenericService {
+class ExampleTools extends GenericService {
 }
