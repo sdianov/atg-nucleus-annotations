@@ -23,6 +23,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.oracle.atg</groupId>
+            <artifactId>dps-classes</artifactId>
+            <version>${atg.version}</version>
+            <scope>system</scope>
+            <systemPath>${atg.root}/DPS/lib/classes.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
