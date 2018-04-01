@@ -6,12 +6,14 @@ import atg.servlet.DynamoServlet;
 import atg.userprofiling.ProfileTools;
 import com.github.sdianov.atgannotations.NucleusComponent;
 import com.github.sdianov.atgannotations.NucleusInject;
-import com.github.sdianov.atgannotations.NucleusScope;
+import com.github.sdianov.atgannotations.Scope;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-@NucleusComponent(scope = NucleusScope.REQUEST, name = "/org/example/ExampleRequestDroplet")
+@NucleusComponent(
+        scope = Scope.REQUEST,
+        name = "/org/example/ExampleRequestDroplet")
 public class ExampleDroplet extends DynamoServlet {
 
     private ExampleTools exampleTools;

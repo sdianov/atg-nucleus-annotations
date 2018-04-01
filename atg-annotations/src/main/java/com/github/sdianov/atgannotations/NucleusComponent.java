@@ -11,7 +11,7 @@ public @interface NucleusComponent {
 
     String name() default "";
 
-    NucleusScope scope() default NucleusScope.UNSPECIFIED;
+    Scope scope() default Scope.UNSPECIFIED;
 
     String description() default "";
 }

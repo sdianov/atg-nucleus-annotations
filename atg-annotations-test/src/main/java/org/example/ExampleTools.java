@@ -1,15 +1,12 @@
 package org.example;
 
 import atg.nucleus.GenericService;
-import com.github.sdianov.atgannotations.CollectionOperation;
-import com.github.sdianov.atgannotations.MapValue;
-import com.github.sdianov.atgannotations.NucleusComponent;
-import com.github.sdianov.atgannotations.NucleusValue;
+import com.github.sdianov.atgannotations.*;
 
 import java.util.List;
 import java.util.Map;
 
-@NucleusComponent()
+@NucleusComponent(scope = Scope.GLOBAL)
 class ExampleTools extends GenericService {
 
     String stringValue;
@@ -19,7 +16,6 @@ class ExampleTools extends GenericService {
     Map<String, String> mapValue;
 
     Object refValue;
-
 
     public String getStringValue() {
         return stringValue;
@@ -35,7 +31,8 @@ class ExampleTools extends GenericService {
         return listValue;
     }
 
-    @NucleusValue(list = {"123", "456"})
+    @NucleusValue(
+            list = {"123", "456"})
     public void setListValue(List<String> listValue) {
         this.listValue = listValue;
     }
@@ -51,7 +48,6 @@ class ExampleTools extends GenericService {
             operation = CollectionOperation.APPEND)
     public void setMapValue(Map<String, String> mapValue) {
         this.mapValue = mapValue;
-
     }
 
     public Object getRefValue() {
