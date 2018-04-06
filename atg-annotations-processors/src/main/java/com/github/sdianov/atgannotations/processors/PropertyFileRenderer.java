@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class PropertyFileRenderer {
 
@@ -20,8 +19,12 @@ public class PropertyFileRenderer {
     public String renderContents(PropertyFileData data) {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("$class=");
-        sb.append(data.className + "\n");
+        sb.append("# ").append(data.componentName.toString()).append("\n");
+        sb.append("$class=").append(data.className).append("\n");
+
+        if (data.scope != null && !data.scope.isEmpty()){
+            sb.append("$scope=").append(data.scope).append("\n");
+        }
 
         return sb.toString();
     }

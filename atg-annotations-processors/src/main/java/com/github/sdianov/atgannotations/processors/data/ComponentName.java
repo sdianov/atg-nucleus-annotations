@@ -35,7 +35,7 @@ public class ComponentName {
         final ComponentName componentName = new ComponentName();
 
         componentName.name = parts.get(parts.size() - 1);
-        componentName.path = parts.subList(0, parts.size() - 2);
+        componentName.path = parts.subList(1, parts.size() - 1);
 
         return componentName;
     }
@@ -50,7 +50,7 @@ public class ComponentName {
         final ComponentName componentName = new ComponentName();
 
         componentName.name = parts[parts.length - 1];
-        componentName.path = Arrays.asList(parts).subList(0, parts.length - 2);
+        componentName.path = Arrays.asList(parts).subList(0, parts.length - 1);
 
         return componentName;
     }

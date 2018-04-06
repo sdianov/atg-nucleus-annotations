@@ -66,8 +66,9 @@ public class NucleusComponentProcessor extends AbstractProcessor {
             fileData.componentName = ComponentName.fromString(annotation.name());
         }
 
+        fileData.className=typeElement.getQualifiedName().toString();
         fileData.description = annotation.description();
-        fileData.scope = annotation.scope().toString();
+        fileData.scope = AnnotationUtils.scopeNames.get(annotation.scope());
 
         for (Element element : typeElement.getEnclosedElements()) {
             if (element instanceof ExecutableElement) {
