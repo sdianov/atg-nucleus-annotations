@@ -1,6 +1,7 @@
 package com.github.sdianov.atgannotations.processors;
 
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
+import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +20,17 @@ public class PropertyFileRenderer {
     public String renderContents(PropertyFileData data) {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("# ").append(data.componentName.toString()).append("\n");
+        for(String c : data.headerComments){
+            sb.append("# ").append(c).append("\n");
+        }
         sb.append("$class=").append(data.className).append("\n");
 
         if (data.scope != null && !data.scope.isEmpty()){
-            sb.append("$scope=").append(data.scope).append("\n");
+            sb.append("$scope=").append(data.scope).append("\n\n");
+        }
+
+        for(PropertyRecordData record : data.properties){
+            sb.append(record.name).append("=").append(record.value).append("\n\n");
         }
 
         return sb.toString();

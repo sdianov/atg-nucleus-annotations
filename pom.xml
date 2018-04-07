@@ -7,14 +7,13 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>atg-annotations</module>
         <module>atg-annotations-processors</module>
         <module>atg-annotations-test</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <atg.root>c:/ATG/ATG11.3</atg.root>
         <atg.version>11.3</atg.version>
     </properties>

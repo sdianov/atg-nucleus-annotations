@@ -5,6 +5,7 @@ import com.github.sdianov.atgannotations.NucleusInject;
 import com.github.sdianov.atgannotations.NucleusValue;
 import com.github.sdianov.atgannotations.processors.data.ComponentName;
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
+import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -26,16 +27,16 @@ public class NucleusComponentProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
 
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Starting NucleusComponentProcessor...");
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                "Starting NucleusComponentProcessor...");
 
         PropertyFileRenderer renderer = new PropertyFileRenderer(
                 processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION));
 
-
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {
 
-                System.out.println(">>Found component class: "+ e.toString());
+                System.out.println(">>Found component class: " + e.toString());
                 if (e instanceof TypeElement) {
                     final TypeElement typeElement = (TypeElement) e;
 
@@ -45,7 +46,8 @@ public class NucleusComponentProcessor extends AbstractProcessor {
                         renderer.renderFile(fileData);
 
                     } catch (IOException e1) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error writing file: " + e1.getMessage());
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Error writing file: " + e1.getMessage());
                         return false;
                     }
                 }
@@ -57,7 +59,6 @@ public class NucleusComponentProcessor extends AbstractProcessor {
     private PropertyFileData processType(TypeElement typeElement) {
         final NucleusComponent annotation = typeElement.getAnnotation(NucleusComponent.class);
 
-
         PropertyFileData fileData = new PropertyFileData();
 
         if ("".equals(annotation.name())) {
@@ -66,7 +67,8 @@ public class NucleusComponentProcessor extends AbstractProcessor {
             fileData.componentName = ComponentName.fromString(annotation.name());
         }
 
-        fileData.className=typeElement.getQualifiedName().toString();
+        fileData.headerComments.add(fileData.componentName.toString());
+        fileData.className = typeElement.getQualifiedName().toString();
         fileData.description = annotation.description();
         fileData.scope = AnnotationUtils.scopeNames.get(annotation.scope());
 
@@ -78,9 +80,32 @@ public class NucleusComponentProcessor extends AbstractProcessor {
                 NucleusInject inject = element.getAnnotation(NucleusInject.class);
                 NucleusValue value = element.getAnnotation(NucleusValue.class);
 
-                if (((inject != null) || (value != null)) && (!AnnotationUtils.isSetter(executableElement))) {
-                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Only setter methods can be annotated");
+                if (inject == null && value == null) {
+                    continue;
                 }
+
+
+                final String setterProperty = AnnotationUtils.checkSetter(executableElement);
+
+                if (((inject != null) || (value != null)) && (setterProperty == null)) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            "Only setter methods can be annotated");
+                }
+
+                if (inject != null && value != null) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            "Either NucleusValue or NucleusInject is allowed");
+                }
+
+                final PropertyRecordData record = new PropertyRecordData();
+                if (inject != null) {
+                    record.name = setterProperty;
+                    record.value = inject.name();
+                } else {
+                    record.name = setterProperty;
+                    record.value = value.value();
+                }
+                fileData.properties.add(record);
 
             }
         }

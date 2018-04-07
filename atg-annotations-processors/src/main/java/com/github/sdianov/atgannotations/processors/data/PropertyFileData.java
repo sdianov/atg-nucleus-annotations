@@ -1,12 +1,13 @@
 package com.github.sdianov.atgannotations.processors.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyFileData {
 
     public ComponentName componentName;
 
-    public List<String> headerComments;
+    public List<String> headerComments = new ArrayList<>();
 
     public String className;
 
@@ -14,4 +15,5 @@ public class PropertyFileData {
 
     public String description;
 
+    public List<PropertyRecordData> properties = new ArrayList<>();
 }

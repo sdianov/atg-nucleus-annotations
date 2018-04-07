@@ -10,5 +10,5 @@ public enum Scope {
     SESSION,
     REQUEST,
     PROTOTYPE,
-    @Deprecated WINDOW
+    WINDOW
 }
