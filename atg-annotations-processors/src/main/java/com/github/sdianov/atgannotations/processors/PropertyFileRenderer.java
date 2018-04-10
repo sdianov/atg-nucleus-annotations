@@ -20,16 +20,24 @@ public class PropertyFileRenderer {
     public String renderContents(PropertyFileData data) {
         final StringBuilder sb = new StringBuilder();
 
-        for(String c : data.headerComments){
+        for (String c : data.headerComments) {
             sb.append("# ").append(c).append("\n");
         }
         sb.append("$class=").append(data.className).append("\n");
 
-        if (data.scope != null && !data.scope.isEmpty()){
+        if (data.scope != null && !data.scope.isEmpty()) {
             sb.append("$scope=").append(data.scope).append("\n\n");
         }
 
-        for(PropertyRecordData record : data.properties){
+        if (data.rawLines != null && data.rawLines.size() > 0) {
+            sb.append("\n");
+            for (String line : data.rawLines) {
+                sb.append(line).append("\n");
+            }
+            sb.append("\n");
+        }
+
+        for (PropertyRecordData record : data.properties) {
             sb.append(record.name).append("=").append(record.value).append("\n\n");
         }
 
@@ -46,10 +54,10 @@ public class PropertyFileRenderer {
             throw new IOException("Unable to create directory:" + dir.getAbsolutePath());
         }
 
-        Path propertyPath = filePath.resolve( data.componentName.name + ".properties");
+        Path propertyPath = filePath.resolve(data.componentName.name + ".properties");
 
 
-        try(PrintWriter wr = new PrintWriter(propertyPath.toFile())) {
+        try (PrintWriter wr = new PrintWriter(propertyPath.toFile())) {
             wr.print(s);
             wr.flush();
         }

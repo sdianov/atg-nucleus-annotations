@@ -15,5 +15,7 @@ public class PropertyFileData {
 
     public String description;
 
+    public List<String> rawLines = null;
+
     public List<PropertyRecordData> properties = new ArrayList<>();
 }

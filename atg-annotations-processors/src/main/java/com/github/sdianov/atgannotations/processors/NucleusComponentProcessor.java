@@ -14,6 +14,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 
 @SupportedAnnotationTypes({
@@ -71,6 +72,8 @@ public class NucleusComponentProcessor extends AbstractProcessor {
         fileData.className = typeElement.getQualifiedName().toString();
         fileData.description = annotation.description();
         fileData.scope = AnnotationUtils.scopeNames.get(annotation.scope());
+
+        fileData.rawLines = Arrays.asList(annotation.rawLines());
 
         for (Element element : typeElement.getEnclosedElements()) {
             if (element instanceof ExecutableElement) {

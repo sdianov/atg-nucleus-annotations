@@ -6,7 +6,12 @@ import com.github.sdianov.atgannotations.*;
 import java.util.List;
 import java.util.Map;
 
-@NucleusComponent(scope = Scope.GLOBAL)
+@NucleusComponent(scope = Scope.GLOBAL,
+        rawLines = {
+                "# additional comment",
+                "$instanceFactory=/atg/Subclasser"
+        }
+)
 class ExampleTools extends GenericService {
 
     String stringValue;
@@ -42,7 +47,7 @@ class ExampleTools extends GenericService {
     }
 
     @NucleusValue(map = {
-            @MapValue(key ="a", value="b"),
+            @MapValue(key = "a", value = "b"),
             @MapValue(key = "c", value = "d")
     },
             operation = CollectionOperation.APPEND)

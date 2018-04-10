@@ -14,4 +14,6 @@ public @interface NucleusComponent {
     Scope scope() default Scope.UNSPECIFIED;
 
     String description() default "";
+
+    String[] rawLines() default {};
 }
