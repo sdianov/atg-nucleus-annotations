@@ -46,6 +46,11 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
                     PropertyFileData fileData = processType(typeElement);
 
+                    if (typeElement.getAnnotation(NucleusComponent.class).isInterface()){
+                        // do not create .property file
+                        continue;
+                    }
+
                     try {
                         renderer.renderFile(fileData);
 
