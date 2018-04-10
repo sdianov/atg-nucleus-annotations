@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 @NucleusComponent(scope = Scope.GLOBAL,
+        name = "/org/example/ExampleAnnotatedTools",
         rawLines = {
                 "# additional comment",
                 "$instanceFactory=/atg/Subclasser"

@@ -6,6 +6,7 @@ import com.github.sdianov.atgannotations.NucleusValue;
 import com.github.sdianov.atgannotations.processors.data.ComponentName;
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
+import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -16,6 +17,8 @@ import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
+
+import static com.github.sdianov.atgannotations.processors.AnnotationUtils.*;
 
 @SupportedAnnotationTypes({
         "com.github.sdianov.atgannotations.NucleusComponent"
@@ -87,29 +90,33 @@ public class NucleusComponentProcessor extends AbstractProcessor {
                     continue;
                 }
 
+                final SetterInfo setter = SetterInfo.fromMethod(executableElement);
 
-                final String setterProperty = AnnotationUtils.checkSetter(executableElement);
-
-                if (((inject != null) || (value != null)) && (setterProperty == null)) {
+                if (setter == null) {
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                             "Only setter methods can be annotated");
-                }
-
-                if (inject != null && value != null) {
-                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            "Either NucleusValue or NucleusInject is allowed");
-                }
-
-                final PropertyRecordData record = new PropertyRecordData();
-                if (inject != null) {
-                    record.name = setterProperty;
-                    record.value = inject.name();
                 } else {
-                    record.name = setterProperty;
-                    record.value = value.value();
-                }
-                fileData.properties.add(record);
 
+                    if (inject != null && value != null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Either NucleusValue or NucleusInject is allowed");
+                    } else {
+
+                        final PropertyRecordData record = new PropertyRecordData();
+                        if (inject != null) {
+                            record.name = setter.beanName;
+
+                            TypeElement paramType = (TypeElement) processingEnv.getTypeUtils().asElement(setter.parameterType);
+
+                            record.value = ComponentName.fromStringOrParameterType(
+                                    inject.name(), paramType).toString();
+                        } else {
+                            record.name = setter.beanName;
+                            record.value = value.value();
+                        }
+                        fileData.properties.add(record);
+                    }
+                }
             }
         }
 

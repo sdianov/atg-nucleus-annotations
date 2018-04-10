@@ -29,16 +29,21 @@ public class AnnotationUtils {
     }
 
     // prevent from instantiation
-    private AnnotationUtils() {}
+    private AnnotationUtils() {
+    }
 
     public static String calculateComponentName(
             NucleusComponent annotation,
             Class<?> componentClass) {
 
-        return  annotation.name(); // TODO
+        return annotation.name(); // TODO
     }
 
-    public static boolean isSetter(ExecutableElement element){
+    public static boolean isNullOrBlank(final String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    public static boolean isSetter(ExecutableElement element) {
 
         return (element.getModifiers().contains(Modifier.PUBLIC)) &&
                 (element.getReturnType().getKind().equals(TypeKind.VOID)) &&
@@ -47,22 +52,5 @@ public class AnnotationUtils {
 
     }
 
-    public static String checkSetter(ExecutableElement element){
-
-        final String elementName = element.getSimpleName().toString();
-
-        final boolean isSetter = (element.getModifiers().contains(Modifier.PUBLIC)) &&
-                (element.getReturnType().getKind().equals(TypeKind.VOID)) &&
-                (elementName.matches("^set[A-Z].*")) &&
-                (element.getParameters().size() == 1);
-
-        if (!isSetter)
-            return null;
-
-        final String propertyName = elementName.substring(3, 4).toLowerCase()
-                + elementName.substring(4);
-
-        return propertyName;
-    }
 
 }
