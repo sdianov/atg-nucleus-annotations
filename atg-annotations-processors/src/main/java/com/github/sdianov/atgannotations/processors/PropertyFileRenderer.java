@@ -30,7 +30,6 @@ public class PropertyFileRenderer {
         }
 
         if (data.rawLines != null && data.rawLines.size() > 0) {
-            sb.append("\n");
             for (String line : data.rawLines) {
                 sb.append(line).append("\n");
             }
@@ -38,7 +37,17 @@ public class PropertyFileRenderer {
         }
 
         for (PropertyRecordData record : data.properties) {
-            sb.append(record.name).append("=").append(record.value).append("\n\n");
+            sb.append(record.name).append("=");
+
+            if (record.values.size() > 1) {
+                for(String value : record.values) {
+                    sb.append("\\\n");
+                    sb.append("\t").append(value);
+                }
+                sb.append("\n");
+            } else {
+                sb.append(record.values.get(0)).append("\n\n");
+            }
         }
 
         return sb.toString();

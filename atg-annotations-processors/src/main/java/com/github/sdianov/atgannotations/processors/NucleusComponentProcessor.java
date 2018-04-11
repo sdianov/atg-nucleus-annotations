@@ -18,12 +18,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
-import static com.github.sdianov.atgannotations.processors.AnnotationUtils.*;
-
 @SupportedAnnotationTypes({
         "com.github.sdianov.atgannotations.NucleusComponent"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedOptions(AnnotationUtils.ATG_GEN_OPTION)
 public class NucleusComponentProcessor extends AbstractProcessor {
 
@@ -40,13 +38,14 @@ public class NucleusComponentProcessor extends AbstractProcessor {
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {
 
-                System.out.println(">>Found component class: " + e.toString());
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                        ">>Found component class: " + e.toString());
                 if (e instanceof TypeElement) {
                     final TypeElement typeElement = (TypeElement) e;
 
                     PropertyFileData fileData = processType(typeElement);
 
-                    if (typeElement.getAnnotation(NucleusComponent.class).isInterface()){
+                    if (typeElement.getAnnotation(NucleusComponent.class).isInterface()) {
                         // do not create .property file
                         continue;
                     }
@@ -70,11 +69,7 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
         PropertyFileData fileData = new PropertyFileData();
 
-        if ("".equals(annotation.name())) {
-            fileData.componentName = ComponentName.fromClassName(typeElement.getQualifiedName().toString());
-        } else {
-            fileData.componentName = ComponentName.fromString(annotation.name());
-        }
+        fileData.componentName = ComponentName.fromStringOrClassType(annotation.name(), typeElement);
 
         fileData.headerComments.add(fileData.componentName.toString());
         fileData.className = typeElement.getQualifiedName().toString();
@@ -85,7 +80,6 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
         for (Element element : typeElement.getEnclosedElements()) {
             if (element instanceof ExecutableElement) {
-
                 ExecutableElement executableElement = (ExecutableElement) element;
 
                 NucleusInject inject = element.getAnnotation(NucleusInject.class);
@@ -100,28 +94,29 @@ public class NucleusComponentProcessor extends AbstractProcessor {
                 if (setter == null) {
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                             "Only setter methods can be annotated");
-                } else {
-
-                    if (inject != null && value != null) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                "Either NucleusValue or NucleusInject is allowed");
-                    } else {
-
-                        final PropertyRecordData record = new PropertyRecordData();
-                        if (inject != null) {
-                            record.name = setter.beanName;
-
-                            TypeElement paramType = (TypeElement) processingEnv.getTypeUtils().asElement(setter.parameterType);
-
-                            record.value = ComponentName.fromStringOrParameterType(
-                                    inject.name(), paramType).toString();
-                        } else {
-                            record.name = setter.beanName;
-                            record.value = value.value();
-                        }
-                        fileData.properties.add(record);
-                    }
+                    continue;
                 }
+
+                TypeElement paramType = (TypeElement) processingEnv.getTypeUtils().asElement(setter.parameterType);
+
+                if (inject != null && value != null) {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            "Either NucleusValue or NucleusInject is allowed");
+                    continue;
+                }
+
+                final PropertyRecordData record = new PropertyRecordData();
+                if (inject != null) {
+                    record.name = setter.beanName;
+
+                    record.values.add(ComponentName.fromStringOrParameterType(
+                            inject.name(), paramType).toString());
+                } else {
+                    record.name = setter.beanName;
+                    record.values.add(value.value());
+                }
+                fileData.properties.add(record);
+
             }
         }
 

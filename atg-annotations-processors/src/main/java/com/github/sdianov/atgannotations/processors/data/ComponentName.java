@@ -59,6 +59,17 @@ public class ComponentName {
         return componentName;
     }
 
+    public static ComponentName fromStringOrClassType(
+            String componentName,
+            TypeElement classType){
+
+        if (componentName == null || "".equals(componentName)) {
+            return ComponentName.fromClassName(classType.getQualifiedName().toString());
+        } else {
+            return ComponentName.fromString(componentName);
+        }
+    }
+
     public static ComponentName fromStringOrParameterType(
             final String string,
             final TypeElement type) {

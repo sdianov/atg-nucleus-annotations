@@ -18,15 +18,19 @@ public class SetterInfo {
         this.parameterType = pParameterType;
     }
 
+    public static boolean isSetter(ExecutableElement element) {
+
+        return (element.getModifiers().contains(Modifier.PUBLIC)) &&
+                (element.getReturnType().getKind().equals(TypeKind.VOID)) &&
+                (element.getSimpleName().toString().matches("^set[A-Z].*")) &&
+                (element.getParameters().size() == 1);
+
+    }
+
     public static SetterInfo fromMethod(ExecutableElement method){
         final String elementName = method.getSimpleName().toString();
 
-        final boolean isSetter = (method.getModifiers().contains(Modifier.PUBLIC)) &&
-                (method.getReturnType().getKind().equals(TypeKind.VOID)) &&
-                (elementName.matches("^set[A-Z].*")) &&
-                (method.getParameters().size() == 1);
-
-        if (!isSetter)
+        if (!isSetter(method))
             return null;
 
         final String propertyName = elementName.substring(3, 4).toLowerCase()

@@ -1,6 +1,8 @@
 package com.github.sdianov.atgannotations.processors;
 
 import com.github.sdianov.atgannotations.NucleusComponent;
+import com.github.sdianov.atgannotations.NucleusInject;
+import com.github.sdianov.atgannotations.NucleusValue;
 import com.github.sdianov.atgannotations.Scope;
 
 import javax.lang.model.element.ExecutableElement;
@@ -16,6 +18,8 @@ public class AnnotationUtils {
 
     public static final Map<Scope, String> scopeNames;
 
+    public static final Map<Class<?>, SetterHandler> setterHandlers;
+
     static {
 
         scopeNames = new HashMap<>();
@@ -26,31 +30,21 @@ public class AnnotationUtils {
         scopeNames.put(Scope.WINDOW, "window");
         scopeNames.put(Scope.PROTOTYPE, "prototype");
 
+
+        setterHandlers = new HashMap<>();
+
+        setterHandlers.put(NucleusInject.class, new InjectSetterHandler());
+        setterHandlers.put(NucleusValue.class, new ValueSetterHandler());
     }
 
     // prevent from instantiation
     private AnnotationUtils() {
     }
 
-    public static String calculateComponentName(
-            NucleusComponent annotation,
-            Class<?> componentClass) {
-
-        return annotation.name(); // TODO
-    }
-
     public static boolean isNullOrBlank(final String s) {
         return s == null || s.trim().isEmpty();
     }
 
-    public static boolean isSetter(ExecutableElement element) {
-
-        return (element.getModifiers().contains(Modifier.PUBLIC)) &&
-                (element.getReturnType().getKind().equals(TypeKind.VOID)) &&
-                (element.getSimpleName().toString().matches("^set[A-Z].*")) &&
-                (element.getParameters().size() == 1);
-
-    }
 
 
 }
