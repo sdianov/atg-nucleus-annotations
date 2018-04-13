@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation processor will generate Nucleus ".property" file
+ * for any class annotated with the NucleusComponent annotation.<br/>
  *
  */
 @Target(value = ElementType.TYPE)
@@ -26,17 +28,18 @@ public @interface NucleusComponent {
     boolean isInterface() default false;
 
     /**
-     * Scope of the Nucleus component
+     * Scope of the Nucleus component<br/>
+     * Generates construction "$scope=[value]"
      */
     Scope scope() default Scope.UNSPECIFIED;
 
     /**
-     *
+     * Description of the component
      */
     String description() default "";
 
     /**
-     * Allows to add arbitrary lines into '.property' file.
+     * Allows to add arbitrary lines into '.property' file.<br/>
      * These lines are placed after component header properties
      */
     String[] rawLines() default {};
