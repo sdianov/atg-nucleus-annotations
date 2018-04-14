@@ -6,15 +6,21 @@ import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.annotation.processing.Filer;
+
+import static org.mockito.Mockito.*;
+
 public class PropertyFileRendererTest {
 
     PropertyFileData data;
     PropertyFileRenderer renderer;
 
     @Before
-    public void init(){
+    public void init() {
 
-        renderer = new PropertyFileRenderer(".");
+        Filer filer = mock(Filer.class);
+
+        renderer = new PropertyFileRenderer(".", filer );
 
         data = new PropertyFileData();
         data.className = "com.example.Service";
@@ -22,7 +28,7 @@ public class PropertyFileRendererTest {
     }
 
     @Test
-    public void renderContentsTest(){
+    public void renderContentsTest() {
 
         String text = renderer.renderContents(data);
 

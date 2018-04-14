@@ -1,14 +1,12 @@
 package com.github.sdianov.atgannotations.processors;
 
-import com.github.sdianov.atgannotations.NucleusComponent;
-import com.github.sdianov.atgannotations.NucleusInject;
-import com.github.sdianov.atgannotations.NucleusValue;
-import com.github.sdianov.atgannotations.Scope;
+import com.github.sdianov.atgannotations.*;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeKind;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +16,9 @@ public class AnnotationUtils {
 
     public static final Map<Scope, String> scopeNames;
 
-    public static final Map<Class<?>, SetterHandler> setterHandlers;
+    public static final Map<Class<? extends Annotation> , SetterHandler> setterHandlers;
 
+    public static final Map<CollectionOperation, String> operatorSymbols;
     static {
 
         scopeNames = new HashMap<>();
@@ -30,11 +29,15 @@ public class AnnotationUtils {
         scopeNames.put(Scope.WINDOW, "window");
         scopeNames.put(Scope.PROTOTYPE, "prototype");
 
+        operatorSymbols = new HashMap<>();
+        operatorSymbols.put(CollectionOperation.APPEND, "+");
+        operatorSymbols.put(CollectionOperation.REMOVE, "-");
+        operatorSymbols.put(CollectionOperation.SET, "");
 
         setterHandlers = new HashMap<>();
 
-        setterHandlers.put(NucleusInject.class, new InjectSetterHandler());
-        setterHandlers.put(NucleusValue.class, new ValueSetterHandler());
+        //setterHandlers.put(NucleusInject.class, new InjectSetterHandler());
+        //setterHandlers.put(NucleusValue.class, new ValueSetterHandler());
     }
 
     // prevent from instantiation

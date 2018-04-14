@@ -3,6 +3,7 @@ package com.github.sdianov.atgannotations.processors;
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 
+import javax.annotation.processing.Filer;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,9 +13,11 @@ import java.nio.file.Paths;
 public class PropertyFileRenderer {
 
     final String generationPath;
+    final Filer filer;
 
-    public PropertyFileRenderer(String pGenPath) {
+    public PropertyFileRenderer(String pGenPath, Filer pFiler) {
         generationPath = pGenPath;
+        filer = pFiler;
     }
 
     public String renderContents(PropertyFileData data) {
@@ -37,14 +40,21 @@ public class PropertyFileRenderer {
         }
 
         for (PropertyRecordData record : data.properties) {
-            sb.append(record.name).append("=");
+            sb.append(record.name);
+
+            sb.append(record.operation);
+            sb.append("=");
 
             if (record.values.size() > 1) {
-                for(String value : record.values) {
+                for (int i = 0; i < record.values.size(); i++) {
+                    String value = record.values.get(i);
                     sb.append("\\\n");
                     sb.append("\t").append(value);
+
+                    if (i < record.values.size() - 1)
+                        sb.append(",");
                 }
-                sb.append("\n");
+                sb.append("\n\n");
             } else {
                 sb.append(record.values.get(0)).append("\n\n");
             }

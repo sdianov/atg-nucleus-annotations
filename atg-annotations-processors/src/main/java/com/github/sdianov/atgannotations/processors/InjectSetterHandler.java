@@ -1,12 +1,29 @@
 package com.github.sdianov.atgannotations.processors;
 
+import com.github.sdianov.atgannotations.NucleusInject;
+import com.github.sdianov.atgannotations.processors.data.ComponentName;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
+import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
-import javax.lang.model.element.ExecutableElement;
+public class InjectSetterHandler implements SetterHandler<NucleusInject> {
 
-public class InjectSetterHandler implements SetterHandler {
+    final NucleusInject annotation;
+
+    public InjectSetterHandler(NucleusInject pAnnotation) {
+        this.annotation = pAnnotation;
+    }
+
     @Override
-    public PropertyRecordData processRecord(ExecutableElement method) {
-        return null;
+    public PropertyRecordData processRecord(SetterInfo setterInfo) throws ProcessingException {
+        final PropertyRecordData record = new PropertyRecordData();
+
+        record.name = setterInfo.beanName;
+
+        ComponentName toInject = ComponentName.fromStringOrParameterType(
+                annotation.name(), setterInfo.parameterType);
+
+        record.values.add(toInject.toString());
+
+        return record;
     }
 }

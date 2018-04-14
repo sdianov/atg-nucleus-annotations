@@ -13,8 +13,10 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -25,37 +27,50 @@ import java.util.Set;
 @SupportedOptions(AnnotationUtils.ATG_GEN_OPTION)
 public class NucleusComponentProcessor extends AbstractProcessor {
 
+    private void logNote(String message) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
+    }
+
+    private void logError(String message) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
+    }
+
+    private Types getTypeUtils() {
+        return processingEnv.getTypeUtils();
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
 
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                "Starting NucleusComponentProcessor...");
+        logNote("Starting NucleusComponentProcessor...");
 
         PropertyFileRenderer renderer = new PropertyFileRenderer(
-                processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION));
+                processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION),
+                processingEnv.getFiler());
 
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {
 
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                        ">>Found component class: " + e.toString());
+                logNote(">>Found component class: " + e.toString());
+
                 if (e instanceof TypeElement) {
                     final TypeElement typeElement = (TypeElement) e;
 
-                    PropertyFileData fileData = processType(typeElement);
-
-                    if (typeElement.getAnnotation(NucleusComponent.class).isInterface()) {
-                        // do not create .property file
-                        continue;
-                    }
-
                     try {
+                        PropertyFileData fileData = processType(typeElement);
+
+                        if (typeElement.getAnnotation(NucleusComponent.class).isInterface()) {
+                            // do not create .property file
+                            continue;
+                        }
                         renderer.renderFile(fileData);
 
                     } catch (IOException e1) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                "Error writing file: " + e1.getMessage());
+                        logError("Error writing file: " + e1.getMessage());
+                        return false;
+                    } catch (ProcessingException ex) {
+                        logError("Annotation processing exception: " + ex.getMessage());
                         return false;
                     }
                 }
@@ -64,7 +79,7 @@ public class NucleusComponentProcessor extends AbstractProcessor {
         return true;
     }
 
-    private PropertyFileData processType(TypeElement typeElement) {
+    private PropertyFileData processType(TypeElement typeElement) throws ProcessingException {
         final NucleusComponent annotation = typeElement.getAnnotation(NucleusComponent.class);
 
         PropertyFileData fileData = new PropertyFileData();
@@ -80,43 +95,40 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
         for (Element element : typeElement.getEnclosedElements()) {
             if (element instanceof ExecutableElement) {
-                ExecutableElement executableElement = (ExecutableElement) element;
+                final ExecutableElement executableElement = (ExecutableElement) element;
+                final SetterInfo setter = SetterInfo.fromMethod(executableElement, getTypeUtils());
 
-                NucleusInject inject = element.getAnnotation(NucleusInject.class);
-                NucleusValue value = element.getAnnotation(NucleusValue.class);
+                SetterHandler handler = null;
 
-                if (inject == null && value == null) {
-                    continue;
+                NucleusInject injectAnnotation = executableElement.getAnnotation(NucleusInject.class);
+
+                if (injectAnnotation != null) {
+
+                    if (setter == null) {
+                        logError("Only setter methods can be annotated");
+                        continue;
+                    }
+                    handler = new InjectSetterHandler(injectAnnotation);
                 }
 
-                final SetterInfo setter = SetterInfo.fromMethod(executableElement);
-
-                if (setter == null) {
-                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            "Only setter methods can be annotated");
-                    continue;
+                NucleusValue valueAnnotation = executableElement.getAnnotation(NucleusValue.class);
+                if (valueAnnotation != null) {
+                    if (handler != null) {
+                        logError("Either NucleusValue or NucleusInject annotation is allowed");
+                        continue;
+                    }
+                    if (setter == null) {
+                        logError("Only setter methods can be annotated");
+                        continue;
+                    }
+                    handler = new ValueSetterHandler(valueAnnotation);
                 }
 
-                TypeElement paramType = (TypeElement) processingEnv.getTypeUtils().asElement(setter.parameterType);
+                if (handler == null) continue;
 
-                if (inject != null && value != null) {
-                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                            "Either NucleusValue or NucleusInject is allowed");
-                    continue;
-                }
+                PropertyRecordData record = handler.processRecord(setter);
 
-                final PropertyRecordData record = new PropertyRecordData();
-                if (inject != null) {
-                    record.name = setter.beanName;
-
-                    record.values.add(ComponentName.fromStringOrParameterType(
-                            inject.name(), paramType).toString());
-                } else {
-                    record.name = setter.beanName;
-                    record.values.add(value.value());
-                }
                 fileData.properties.add(record);
-
             }
         }
 

@@ -9,7 +9,7 @@ public class PropertyRecordData {
 
     public String name;
 
-    public String operation;
+    public String operation ="";
 
     public List<String> values = new ArrayList<>();
 }

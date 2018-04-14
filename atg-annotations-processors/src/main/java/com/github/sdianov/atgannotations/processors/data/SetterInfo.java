@@ -6,19 +6,20 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 public class SetterInfo {
 
     public String beanName;
 
-    public TypeMirror parameterType;
+    TypeMirror parameterTypeMirror;
 
-    private SetterInfo(String pBeanName, TypeMirror pParameterType){
-        this.beanName = pBeanName;
-        this.parameterType = pParameterType;
+    public TypeElement parameterType;
+
+    private SetterInfo(){
     }
 
-    public static boolean isSetter(ExecutableElement element) {
+    private static boolean isSetter(ExecutableElement element) {
 
         return (element.getModifiers().contains(Modifier.PUBLIC)) &&
                 (element.getReturnType().getKind().equals(TypeKind.VOID)) &&
@@ -27,7 +28,7 @@ public class SetterInfo {
 
     }
 
-    public static SetterInfo fromMethod(ExecutableElement method){
+    public static SetterInfo fromMethod(final ExecutableElement method, final Types typeUtils){
         final String elementName = method.getSimpleName().toString();
 
         if (!isSetter(method))
@@ -38,7 +39,12 @@ public class SetterInfo {
 
         final VariableElement variable = method.getParameters().get(0);
 
-        return new SetterInfo(propertyName, variable.asType());
+        final SetterInfo setterInfo = new SetterInfo();
+        setterInfo.beanName = propertyName;
+        setterInfo.parameterTypeMirror = variable.asType();
+        setterInfo.parameterType = (TypeElement) typeUtils.asElement(setterInfo.parameterTypeMirror);
+
+        return setterInfo;
 
     }
 
