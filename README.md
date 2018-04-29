@@ -1,8 +1,10 @@
-# atg-annotations
+# Annotation-based configuration of ATG Nucleus components
 
-Collection of Java annotations to allow configure Nucleus components without ".property" files.
+This project contains collection of Java annotations that allows to configure Oracle Web Commerce (ATG) Nucleus components without ".property" files.
 
-Inspired by Spring annotations configuration.
+----------------------------------------------------------
+
+This project is heavily inspired by Spring annotation-based configuration.
 The main idea is very simple: the annotation processors generate property files from annotation values and place these files into additional Nucleus config layer.
 
 MANIFEST.MF file for your ATG module should look like this:
@@ -15,10 +17,13 @@ It is a good idea to place ordinary config layer after generated config in 'ATG-
 **Annotation List:**
 
 _NucleusComponent_ - exports annotated Java class as a Nucleus component.
+If component name is not set, it will be built from class full name.
 
 _NucleusInject_ - injects existing Nucleus component into this component property.
+Can infer injected component name from the type of property if annotated with @NucleusComponent 
 
-_NucleusValue_ - sets the property value for this Nucleus component
+_NucleusValue_ - sets the property value for this Nucleus component. 
+Allows scalar values, lists, maps and references.
 
 Please see Javadoc for detailed documentation.
 
@@ -61,7 +66,7 @@ with the following content:
 	    456
 
 
-**Usage**
+**Usage:**
 
 Add atg-annotations.jar as a runtime dependency.
 Add atg-annotation-processors.jar as a compile-time dependency
