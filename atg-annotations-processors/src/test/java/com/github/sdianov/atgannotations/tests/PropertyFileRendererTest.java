@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import javax.annotation.processing.Filer;
 
+import java.io.IOException;
+
 import static org.mockito.Mockito.*;
 
 public class PropertyFileRendererTest {
@@ -16,11 +18,11 @@ public class PropertyFileRendererTest {
     PropertyFileRenderer renderer;
 
     @Before
-    public void init() {
+    public void init() throws IOException {
 
         Filer filer = mock(Filer.class);
 
-        renderer = new PropertyFileRenderer(".", filer );
+        renderer = new PropertyFileRenderer(".");
 
         data = new PropertyFileData();
         data.className = "com.example.Service";

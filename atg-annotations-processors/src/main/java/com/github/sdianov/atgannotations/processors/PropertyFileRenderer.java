@@ -4,20 +4,18 @@ import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 
 import javax.annotation.processing.Filer;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.lang.model.element.Element;
+import javax.tools.*;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PropertyFileRenderer {
 
-    final String generationPath;
-    final Filer filer;
+    private final String generationPath;
 
-    public PropertyFileRenderer(String pGenPath, Filer pFiler) {
+    public PropertyFileRenderer(String pGenPath) {
         generationPath = pGenPath;
-        filer = pFiler;
     }
 
     public String renderContents(PropertyFileData data) {
@@ -66,7 +64,7 @@ public class PropertyFileRenderer {
     public void renderFile(PropertyFileData data) throws IOException {
         String s = renderContents(data);
 
-        String[] context = data.componentName.path.toArray(new String[data.componentName.path.size()]);
+        String[] context = data.componentName.path.toArray(new String[0]);
         Path filePath = Paths.get(generationPath, context);
         File dir = filePath.toFile();
         if (!dir.exists() && !dir.mkdirs()) {
@@ -74,7 +72,6 @@ public class PropertyFileRenderer {
         }
 
         Path propertyPath = filePath.resolve(data.componentName.name + ".properties");
-
 
         try (PrintWriter wr = new PrintWriter(propertyPath.toFile())) {
             wr.print(s);

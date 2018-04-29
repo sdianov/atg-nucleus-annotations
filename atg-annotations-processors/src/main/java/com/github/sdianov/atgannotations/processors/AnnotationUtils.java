@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class AnnotationUtils {
 
-    public static final String ATG_GEN_OPTION = "atggen";
+    public static final String ATG_GEN_OPTION = "atggendir";
 
     public static final Map<Scope, String> scopeNames;
 

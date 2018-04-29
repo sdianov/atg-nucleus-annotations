@@ -15,8 +15,12 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -39,15 +43,35 @@ public class NucleusComponentProcessor extends AbstractProcessor {
         return processingEnv.getTypeUtils();
     }
 
+    private String generationPath = null;
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
 
         logNote("Starting NucleusComponentProcessor...");
 
-        PropertyFileRenderer renderer = new PropertyFileRenderer(
-                processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION),
-                processingEnv.getFiler());
+        if (generationPath == null) {
+
+            generationPath = processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION);
+
+            if (generationPath == null || generationPath.trim().isEmpty()) {
+
+                try {
+                    FileObject fileObject = processingEnv.getFiler().createResource(
+                            StandardLocation.CLASS_OUTPUT, "", "~tmp",
+                            (Element[]) null);
+                    Path projectPath = Paths.get(fileObject.toUri()).getParent().getParent();
+                    fileObject.delete();
+                    Path sourcePath = projectPath.resolve("genconfig");
+                    generationPath = sourcePath.toString();
+                } catch (IOException e) {
+                    logError("Cannot create file: " + e.getMessage());
+                    return true;
+                }
+            }
+        }
+        PropertyFileRenderer renderer = new PropertyFileRenderer(generationPath);
 
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {
@@ -68,10 +92,10 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
                     } catch (IOException e1) {
                         logError("Error writing file: " + e1.getMessage());
-                        return false;
+                        return true;
                     } catch (ProcessingException ex) {
                         logError("Annotation processing exception: " + ex.getMessage());
-                        return false;
+                        return true;
                     }
                 }
             }

@@ -37,7 +37,8 @@ public @interface NucleusValue {
     String propertyRef() default "";
 
     /**
-     * Operation for 'list' and 'map' annotation values
+     * Operation for 'list' and 'map' annotation values<br/>
+     *
      */
     CollectionOperation operation() default CollectionOperation.SET;
 }

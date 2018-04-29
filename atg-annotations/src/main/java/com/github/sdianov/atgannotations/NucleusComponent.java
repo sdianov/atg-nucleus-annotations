@@ -16,7 +16,7 @@ public @interface NucleusComponent {
 
     /**
      * Describes Nucleus component path and name<br/>
-     * If set to "", the component path and name will be built
+     * If omitted, the component path and name will be built
      * from the annotated class package and name.
      */
     String name() default "";
@@ -35,6 +35,7 @@ public @interface NucleusComponent {
 
     /**
      * Description of the component
+     * Generates construction $description=[value]
      */
     String description() default "";
 

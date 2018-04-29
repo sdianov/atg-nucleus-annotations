@@ -12,13 +12,13 @@ public enum CollectionOperation {
     SET,
 
     /**
-     * Appends values to collection<br/>
+     * Appends values to the collection<br/>
      * Produces construction "collection+=values"
      */
     APPEND,
 
     /**
-     * Removes values from collection<br/>
+     * Removes values from the collection<br/>
      * Produces construction "collection-=values"
      */
     REMOVE

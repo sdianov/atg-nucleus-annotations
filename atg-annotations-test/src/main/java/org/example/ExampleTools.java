@@ -10,18 +10,18 @@ import java.util.Map;
         name = "/org/example/ExampleAnnotatedTools",
         rawLines = {
                 "# additional comment",
-                "$instanceFactory=/atg/Subclasser"
+                "$instanceFactory=/atg/multisite/Subclasser"
         }
 )
 class ExampleTools extends GenericService {
 
-    String stringValue;
+    private String stringValue;
 
-    List<String> listValue;
+    private List<String> listValue;
 
-    Map<String, String> mapValue;
+    private Map<String, String> mapValue;
 
-    Object refValue;
+    private Object refValue;
 
     public String getStringValue() {
         return stringValue;
