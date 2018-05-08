@@ -68,6 +68,9 @@ with the following content:
 
 **Usage:**
 
+Clone the repository. Set the 'atg.root' and 'atg.version' properties in pom.xml to correct values. 
+Install artifacts into local maven repository by running 'mvn clean install' command from root directory.
+
 Add atg-annotations.jar as a runtime dependency.
 Add atg-annotation-processors.jar as a compile-time dependency
 
