@@ -20,12 +20,12 @@ _NucleusComponent_ - exports annotated Java class as a Nucleus component.
 If component name is not set, it will be built from class full name.
 
 _NucleusInject_ - injects existing Nucleus component into this component property.
-Can infer injected component name from the type of property if annotated with @NucleusComponent 
+Can infer injected component name from the type of property annotated with @NucleusComponent 
 
 _NucleusValue_ - sets the property value for this Nucleus component. 
 Allows scalar values, lists, maps and references.
 
-Please see Javadoc for detailed documentation.
+Please see Javadoc for the detailed documentation.
 
 **Example:**
 
@@ -52,7 +52,7 @@ For the following Java class:
         ...
     }
 
-Compilation will generate new property file '{genconfig}/org/example/ExampleDroplet.properties
+Compilation will generate new property file **'{genconfig}/org/example/ExampleDroplet.properties'**
 with the following content:
 
     # /org/example/ExampleDroplet
@@ -88,7 +88,7 @@ Add atg-annotation-processors.jar as a compile-time dependency
 
 
 
-By default, generated property files will be placed under the folder CLASS_OUTPUT/../genconfig.  
+By default, generated property files will be placed under the folder **CLASS_OUTPUT/../genconfig**.  
 You can also set file path explicitly by setting java parameter "-Aatggendir" .
 
         <plugin>
