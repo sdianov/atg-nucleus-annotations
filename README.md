@@ -71,8 +71,8 @@ with the following content:
 Clone the repository. Set the 'atg.root' and 'atg.version' properties in pom.xml to correct values. 
 Install artifacts into local maven repository by running 'mvn clean install' command from root directory.
 
-Add atg-annotations.jar as a runtime dependency.
-Add atg-annotation-processors.jar as a compile-time dependency
+Add atg-annotations.jar as a compile dependency.
+Add atg-annotation-processors.jar as a provided dependency
 
         <dependency>
             <groupId>com.github.sdianov</groupId>
@@ -83,7 +83,7 @@ Add atg-annotation-processors.jar as a compile-time dependency
             <groupId>com.github.sdianov</groupId>
             <artifactId>atg-annotations-processors</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
 
