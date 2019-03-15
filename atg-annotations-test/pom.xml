@@ -45,7 +45,7 @@
             <groupId>com.github.sdianov</groupId>
             <artifactId>atg-annotations-processors</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
