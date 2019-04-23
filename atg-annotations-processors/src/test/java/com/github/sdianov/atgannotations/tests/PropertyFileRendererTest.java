@@ -1,7 +1,7 @@
 package com.github.sdianov.atgannotations.tests;
 
 import com.github.sdianov.atgannotations.processors.PropertyFileRenderer;
-import com.github.sdianov.atgannotations.processors.data.ComponentName;
+import com.github.sdianov.atgannotations.processors.data.ComponentDescriptor;
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class PropertyFileRendererTest {
     PropertyFileRenderer renderer;
 
     @Before
-    public void init() throws IOException {
+    public void init() {
 
         Filer filer = mock(Filer.class);
 
@@ -26,7 +26,7 @@ public class PropertyFileRendererTest {
 
         data = new PropertyFileData();
         data.className = "com.example.Service";
-        data.componentName = ComponentName.fromString("/org/example/Test");
+        data.componentDescriptor = ComponentDescriptor.fromString("/org/example/Test");
     }
 
     @Test

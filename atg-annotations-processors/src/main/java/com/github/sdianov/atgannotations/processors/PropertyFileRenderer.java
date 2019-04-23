@@ -71,13 +71,13 @@ public class PropertyFileRenderer {
     public void renderFile(PropertyFileData data) throws IOException {
         String s = renderContents(data);
 
-        String filePath = FilenameUtils.concat(generationPath, data.componentName.fullPath());
+        String filePath = FilenameUtils.concat(generationPath, data.componentDescriptor.fullPath());
         File dir = new File(filePath);
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Unable to create directory:" + dir.getAbsolutePath());
         }
 
-        String propertyPath = FilenameUtils.concat(filePath, data.componentName.getName() + ".properties");
+        String propertyPath = FilenameUtils.concat(filePath, data.componentDescriptor.getName() + ".properties");
 
         FileUtils.writeStringToFile(new File(propertyPath), s, Charset.defaultCharset());
 

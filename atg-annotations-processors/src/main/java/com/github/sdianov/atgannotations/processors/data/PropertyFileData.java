@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PropertyFileData {
 
-    public ComponentName componentName;
+    public ComponentDescriptor componentDescriptor;
 
     public List<String> headerComments = new ArrayList<String>();
 

@@ -3,12 +3,11 @@ package com.github.sdianov.atgannotations.processors;
 import com.github.sdianov.atgannotations.NucleusComponent;
 import com.github.sdianov.atgannotations.NucleusInject;
 import com.github.sdianov.atgannotations.NucleusValue;
-import com.github.sdianov.atgannotations.processors.data.ComponentName;
+import com.github.sdianov.atgannotations.processors.data.ComponentDescriptor;
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -17,8 +16,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
@@ -28,19 +25,7 @@ import java.util.Set;
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedOptions(AnnotationUtils.ATG_GEN_OPTION)
-public class NucleusComponentProcessor extends AbstractProcessor {
-
-    private void logNote(String message) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
-    }
-
-    private void logError(String message) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
-    }
-
-    private Types getTypeUtils() {
-        return processingEnv.getTypeUtils();
-    }
+public class NucleusComponentProcessor extends BaseProcessor {
 
     private String generationPath = null;
 
@@ -56,7 +41,7 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
             if (generationPath == null || generationPath.trim().isEmpty()) {
                 try {
-                    generationPath = AnnotationUtils.defaultGenerationPath(processingEnv);
+                    generationPath = defaultGenerationPath();
                 } catch (IOException e) {
                     logError("Cannot create file: " + e.getMessage());
                     return true;
@@ -100,9 +85,9 @@ public class NucleusComponentProcessor extends AbstractProcessor {
 
         PropertyFileData fileData = new PropertyFileData();
 
-        fileData.componentName = ComponentName.fromStringOrClassType(annotation.name(), typeElement);
+        fileData.componentDescriptor = ComponentDescriptor.fromStringOrClassType(annotation.name(), typeElement);
 
-        fileData.headerComments.add(fileData.componentName.toString());
+        fileData.headerComments.add(fileData.componentDescriptor.toString());
         fileData.className = typeElement.getQualifiedName().toString();
         fileData.description = annotation.description();
         fileData.scope = AnnotationUtils.scopeNames.get(annotation.scope());

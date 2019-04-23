@@ -1,21 +1,21 @@
 package com.github.sdianov.atgannotations.tests;
 
-import com.github.sdianov.atgannotations.processors.data.ComponentName;
+import com.github.sdianov.atgannotations.processors.data.ComponentDescriptor;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ComponentNameTest {
+public class ComponentDescriptorTest {
 
     @Test
     public void testFromString(){
-        ComponentName name = ComponentName.fromString("/org/example/TestComponent");
+        ComponentDescriptor name = ComponentDescriptor.fromString("/org/example/TestComponent");
 
         assertEquals(name.toString(), "/org/example/TestComponent");
     }
 
     @Test
     public void testFromClassName(){
-        ComponentName name = ComponentName.fromClassName("org.example.TestClass");
+        ComponentDescriptor name = ComponentDescriptor.fromClassName("org.example.TestClass");
 
         assertEquals(name.toString(), "/org/example/TestClass");
     }

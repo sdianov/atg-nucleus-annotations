@@ -9,16 +9,17 @@ import java.util.List;
 
 import static com.github.sdianov.atgannotations.processors.AnnotationUtils.*;
 
-public class ComponentName {
+public class ComponentDescriptor {
 
-    private List<String> path;
+    private final List<String> path;
     private String name;
 
-    private ComponentName() {
-
+    private ComponentDescriptor(List<String> path, String name) {
+        this.path = path;
+        this.name = name;
     }
 
-    public static ComponentName fromString(final String s) {
+    public static ComponentDescriptor fromString(final String s) {
         if (isNullOrBlank(s)) {
             throw new IllegalArgumentException("component name cannot be empty");
         }
@@ -33,41 +34,36 @@ public class ComponentName {
             }
         }
 
-        final ComponentName componentName = new ComponentName();
-
-        componentName.name = parts.get(parts.size() - 1);
-        componentName.path = parts.subList(1, parts.size() - 1);
-
-        return componentName;
+        return new ComponentDescriptor(
+                parts.subList(1, parts.size() - 1),
+                parts.get(parts.size() - 1)
+        );
     }
 
-    public static ComponentName fromClassName(final String className) {
+    public static ComponentDescriptor fromClassName(final String className) {
         if (isNullOrBlank(className)) {
             throw new IllegalArgumentException("component name cannot be empty");
         }
 
         final String[] parts = className.split("\\.");
 
-        final ComponentName componentName = new ComponentName();
-
-        componentName.name = parts[parts.length - 1];
-        componentName.path = Arrays.asList(parts).subList(0, parts.length - 1);
-
-        return componentName;
+        return new ComponentDescriptor(
+                Arrays.asList(parts).subList(0, parts.length - 1),
+                parts[parts.length - 1]);
     }
 
-    public static ComponentName fromStringOrClassType(
+    public static ComponentDescriptor fromStringOrClassType(
             String componentName,
             TypeElement classType) {
 
         if (componentName == null || "".equals(componentName)) {
-            return ComponentName.fromClassName(classType.getQualifiedName().toString());
+            return ComponentDescriptor.fromClassName(classType.getQualifiedName().toString());
         } else {
-            return ComponentName.fromString(componentName);
+            return ComponentDescriptor.fromString(componentName);
         }
     }
 
-    public static ComponentName fromStringOrParameterType(
+    public static ComponentDescriptor fromStringOrParameterType(
             final String string,
             final TypeElement type) {
         if (isNullOrBlank(string) && type == null) {
