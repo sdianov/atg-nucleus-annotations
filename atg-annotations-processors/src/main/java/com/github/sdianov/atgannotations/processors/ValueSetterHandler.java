@@ -6,12 +6,11 @@ import com.github.sdianov.atgannotations.NucleusValue;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
-import javax.lang.model.element.ExecutableElement;
 import java.util.Arrays;
 
 public class ValueSetterHandler implements SetterHandler<NucleusValue> {
 
-    NucleusValue annotation;
+    private NucleusValue annotation;
 
     public ValueSetterHandler(NucleusValue pAnnotation) {
         this.annotation = pAnnotation;

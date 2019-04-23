@@ -13,10 +13,10 @@
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <atg.root>c:/ATG/ATG11.3</atg.root>
-        <atg.version>11.3</atg.version>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <atg.root>${user.home}/ATG1012</atg.root>
+        <atg.version>10.1.2</atg.version>
     </properties>
 
     <dependencies>

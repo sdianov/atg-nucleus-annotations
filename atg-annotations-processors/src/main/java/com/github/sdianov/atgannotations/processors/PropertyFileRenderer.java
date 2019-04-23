@@ -2,13 +2,15 @@ package com.github.sdianov.atgannotations.processors;
 
 import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
-import javax.annotation.processing.Filer;
-import javax.lang.model.element.Element;
-import javax.tools.*;
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import static com.github.sdianov.atgannotations.processors.AnnotationUtils.isNullOrBlank;
+
 
 public class PropertyFileRenderer {
 
@@ -27,9 +29,14 @@ public class PropertyFileRenderer {
         sb.append("$class=").append(data.className).append("\n");
 
         if (data.scope != null && !data.scope.isEmpty()) {
-            sb.append("$scope=").append(data.scope).append("\n\n");
+            sb.append("$scope=").append(data.scope).append("\n");
         }
 
+        if (!isNullOrBlank(data.description)) {
+            sb.append("$description=").append(data.description).append("\n");
+        }
+
+        sb.append("\n");
         if (data.rawLines != null && data.rawLines.size() > 0) {
             for (String line : data.rawLines) {
                 sb.append(line).append("\n");
@@ -64,19 +71,15 @@ public class PropertyFileRenderer {
     public void renderFile(PropertyFileData data) throws IOException {
         String s = renderContents(data);
 
-        String[] context = data.componentName.path.toArray(new String[0]);
-        Path filePath = Paths.get(generationPath, context);
-        File dir = filePath.toFile();
+        String filePath = FilenameUtils.concat(generationPath, data.componentName.fullPath());
+        File dir = new File(filePath);
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Unable to create directory:" + dir.getAbsolutePath());
         }
 
-        Path propertyPath = filePath.resolve(data.componentName.name + ".properties");
+        String propertyPath = FilenameUtils.concat(filePath, data.componentName.getName() + ".properties");
 
-        try (PrintWriter wr = new PrintWriter(propertyPath.toFile())) {
-            wr.print(s);
-            wr.flush();
-        }
+        FileUtils.writeStringToFile(new File(propertyPath), s, Charset.defaultCharset());
 
     }
 

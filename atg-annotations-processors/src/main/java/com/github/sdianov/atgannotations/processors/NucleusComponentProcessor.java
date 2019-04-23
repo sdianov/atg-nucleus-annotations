@@ -8,26 +8,25 @@ import com.github.sdianov.atgannotations.processors.data.PropertyFileData;
 import com.github.sdianov.atgannotations.processors.data.PropertyRecordData;
 import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Set;
 
 @SupportedAnnotationTypes({
         "com.github.sdianov.atgannotations.NucleusComponent"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedOptions(AnnotationUtils.ATG_GEN_OPTION)
 public class NucleusComponentProcessor extends AbstractProcessor {
 
@@ -56,15 +55,8 @@ public class NucleusComponentProcessor extends AbstractProcessor {
             generationPath = processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION);
 
             if (generationPath == null || generationPath.trim().isEmpty()) {
-
                 try {
-                    FileObject fileObject = processingEnv.getFiler().createResource(
-                            StandardLocation.CLASS_OUTPUT, "", "~tmp",
-                            (Element[]) null);
-                    Path projectPath = Paths.get(fileObject.toUri()).getParent().getParent();
-                    fileObject.delete();
-                    Path sourcePath = projectPath.resolve("genconfig");
-                    generationPath = sourcePath.toString();
+                    generationPath = AnnotationUtils.defaultGenerationPath(processingEnv);
                 } catch (IOException e) {
                     logError("Cannot create file: " + e.getMessage());
                     return true;
@@ -76,7 +68,7 @@ public class NucleusComponentProcessor extends AbstractProcessor {
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {
 
-                logNote(">>Found component class: " + e.toString());
+                logNote("Found component class: " + e.toString());
 
                 if (e instanceof TypeElement) {
                     final TypeElement typeElement = (TypeElement) e;

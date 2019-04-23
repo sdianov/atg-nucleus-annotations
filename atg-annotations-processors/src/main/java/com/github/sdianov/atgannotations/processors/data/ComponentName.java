@@ -4,9 +4,6 @@ import com.github.sdianov.atgannotations.NucleusComponent;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,8 +11,8 @@ import static com.github.sdianov.atgannotations.processors.AnnotationUtils.*;
 
 public class ComponentName {
 
-    public List<String> path;
-    public String name;
+    private List<String> path;
+    private String name;
 
     private ComponentName() {
 
@@ -61,7 +58,7 @@ public class ComponentName {
 
     public static ComponentName fromStringOrClassType(
             String componentName,
-            TypeElement classType){
+            TypeElement classType) {
 
         if (componentName == null || "".equals(componentName)) {
             return ComponentName.fromClassName(classType.getQualifiedName().toString());
@@ -88,14 +85,20 @@ public class ComponentName {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String fullPath() {
+        StringBuilder sb = new StringBuilder();
+        for (String part : path) {
+            sb.append(part).append("/");
+        }
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("/");
-        for (String part : path) {
-            sb.append(part);
-            sb.append("/");
-        }
-        sb.append(name);
-        return sb.toString();
+        return "/" + fullPath() + name;
     }
 }

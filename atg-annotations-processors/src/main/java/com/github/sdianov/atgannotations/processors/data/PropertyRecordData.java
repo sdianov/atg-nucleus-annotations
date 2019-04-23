@@ -11,5 +11,5 @@ public class PropertyRecordData {
 
     public String operation ="";
 
-    public List<String> values = new ArrayList<>();
+    public List<String> values = new ArrayList<String>();
 }

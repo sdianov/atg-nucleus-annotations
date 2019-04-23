@@ -11,7 +11,8 @@ import com.github.sdianov.atgannotations.Scope;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-@NucleusComponent(scope = Scope.GLOBAL)
+@NucleusComponent(scope = Scope.GLOBAL,
+        description = "Example droplet component")
 public class ExampleDroplet extends DynamoServlet {
 
     private ExampleTools exampleTools;

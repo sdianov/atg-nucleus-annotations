@@ -7,14 +7,14 @@ import com.github.sdianov.atgannotations.processors.data.SetterInfo;
 
 public class InjectSetterHandler implements SetterHandler<NucleusInject> {
 
-    final NucleusInject annotation;
+    private final NucleusInject annotation;
 
     public InjectSetterHandler(NucleusInject pAnnotation) {
         this.annotation = pAnnotation;
     }
 
     @Override
-    public PropertyRecordData processRecord(SetterInfo setterInfo) throws ProcessingException {
+    public PropertyRecordData processRecord(SetterInfo setterInfo) {
         final PropertyRecordData record = new PropertyRecordData();
 
         record.name = setterInfo.beanName;

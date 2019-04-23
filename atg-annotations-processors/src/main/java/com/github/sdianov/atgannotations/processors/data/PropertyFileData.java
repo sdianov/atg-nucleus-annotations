@@ -7,7 +7,7 @@ public class PropertyFileData {
 
     public ComponentName componentName;
 
-    public List<String> headerComments = new ArrayList<>();
+    public List<String> headerComments = new ArrayList<String>();
 
     public String className;
 
@@ -17,5 +17,5 @@ public class PropertyFileData {
 
     public List<String> rawLines = null;
 
-    public List<PropertyRecordData> properties = new ArrayList<>();
+    public List<PropertyRecordData> properties = new ArrayList<PropertyRecordData>();
 }
