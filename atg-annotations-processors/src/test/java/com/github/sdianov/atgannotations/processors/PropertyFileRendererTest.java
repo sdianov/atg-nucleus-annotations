@@ -1,4 +1,4 @@
-package com.github.sdianov.atgannotations.tests;
+package com.github.sdianov.atgannotations.processors;
 
 import com.github.sdianov.atgannotations.processors.PropertyFileRenderer;
 import com.github.sdianov.atgannotations.processors.data.ComponentDescriptor;

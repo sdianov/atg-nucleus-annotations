@@ -12,7 +12,7 @@ import static com.github.sdianov.atgannotations.processors.AnnotationUtils.*;
 public class ComponentDescriptor {
 
     private final List<String> path;
-    private String name;
+    private final String name;
 
     private ComponentDescriptor(List<String> path, String name) {
         this.path = path;

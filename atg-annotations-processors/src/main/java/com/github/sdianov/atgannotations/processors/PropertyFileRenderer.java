@@ -20,7 +20,7 @@ public class PropertyFileRenderer {
         generationPath = pGenPath;
     }
 
-    public String renderContents(PropertyFileData data) {
+    String renderContents(PropertyFileData data) {
         final StringBuilder sb = new StringBuilder();
 
         for (String c : data.headerComments) {

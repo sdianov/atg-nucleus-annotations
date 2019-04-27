@@ -27,7 +27,6 @@ import java.util.Set;
 @SupportedOptions(AnnotationUtils.ATG_GEN_OPTION)
 public class NucleusComponentProcessor extends BaseProcessor {
 
-    private String generationPath = null;
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations,
@@ -35,20 +34,8 @@ public class NucleusComponentProcessor extends BaseProcessor {
 
         logNote("Starting NucleusComponentProcessor...");
 
-        if (generationPath == null) {
 
-            generationPath = processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION);
-
-            if (generationPath == null || generationPath.trim().isEmpty()) {
-                try {
-                    generationPath = defaultGenerationPath();
-                } catch (IOException e) {
-                    logError("Cannot create file: " + e.getMessage());
-                    return true;
-                }
-            }
-        }
-        PropertyFileRenderer renderer = new PropertyFileRenderer(generationPath);
+        PropertyFileRenderer renderer = new PropertyFileRenderer(getGenerationPath());
 
         for (TypeElement te : annotations) {
             for (Element e : roundEnv.getElementsAnnotatedWith(te)) {

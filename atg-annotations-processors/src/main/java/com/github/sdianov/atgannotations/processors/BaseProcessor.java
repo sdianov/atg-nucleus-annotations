@@ -12,6 +12,8 @@ import java.io.IOException;
 
 abstract class BaseProcessor extends AbstractProcessor {
 
+    private String generationPath = null;
+
     protected void logNote(String message) {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
     }
@@ -33,4 +35,20 @@ abstract class BaseProcessor extends AbstractProcessor {
         return FilenameUtils.concat(projectPath, "../../genconfig");
     }
 
+    public String getGenerationPath() {
+        if (generationPath == null) {
+
+            generationPath = processingEnv.getOptions().get(AnnotationUtils.ATG_GEN_OPTION);
+
+            if (generationPath == null || generationPath.trim().isEmpty()) {
+                try {
+                    generationPath = defaultGenerationPath();
+                } catch (IOException e) {
+                    logError("Cannot create file: " + e.getMessage());
+                }
+            }
+        }
+
+        return generationPath;
+    }
 }
