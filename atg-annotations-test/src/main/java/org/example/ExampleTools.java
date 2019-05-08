@@ -13,7 +13,7 @@ import java.util.Map;
                 "$instanceFactory=/atg/multisite/Subclasser"
         }
 )
-@NucleusRegister(componentName = "/atg/Initial", propertyName = "initialServices")
+@NucleusRegister(registryName = "/atg/Initial", propertyName = "initialServices")
 class ExampleTools extends GenericService {
 
     private String stringValue;

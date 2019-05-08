@@ -42,7 +42,7 @@ public class NucleusRegisterProcessor extends BaseProcessor {
 
 
                 ComponentPropertyDescriptor registry = new ComponentPropertyDescriptor(
-                        ComponentDescriptor.fromString(registerAnnotation.componentName()),
+                        ComponentDescriptor.fromString(registerAnnotation.registryName()),
                         registerAnnotation.propertyName()
                 );
 
